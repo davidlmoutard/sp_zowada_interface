@@ -1,5 +1,3 @@
-date = '20210506'
-objid = 'ZOW2021aab'
 
 def main(date, objid):
     from astropy.io import fits

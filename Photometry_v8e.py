@@ -1,13 +1,5 @@
     # -*- coding: utf-8 -*-
-date = '20210505'
-objid = 'ZOW2021aab'
-predmag = 20
-magrange = 2.5
-fwhmmultiplier = 2
-snr = 1.5
-apradius = 2
-anninner = 1
-annouter = 1.5
+
 
 def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner, annouter):
     """

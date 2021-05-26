@@ -15,8 +15,6 @@ Output is written to /python/filesnew/<FITS file object name>
 # Not optimized, runs multiple variantions of combination.  This is a fully functioning and usable tool!! - 022020!!
 
 ### Load the Astropy and other functions and programs - not all used
-objid = 'ZOW2021aab'
-date = '20210504'
 
 def main(date, objid):
     import numpy as np

@@ -11,8 +11,6 @@ Output is written to /python/filesnew/<FITS file object name>
 ###
 
 ### Load the Astropy and other functions and programs - not all used
-objid = 'ZOW2021aab'
-date = '20210506'
 
 def main(date,objid):
 

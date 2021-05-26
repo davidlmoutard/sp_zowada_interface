@@ -1,12 +1,3 @@
-date = '20210421'
-objid = 'ZOW2021aaa'
-predmag = 18
-magrange = 2
-fwhmmultiplier = 2
-snr = 2
-apradius = 2
-anninner = 1.5
-annouter = 2
 
 
 def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner, annouter):
