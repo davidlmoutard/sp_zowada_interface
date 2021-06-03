@@ -1,7 +1,7 @@
     # -*- coding: utf-8 -*-
 
 
-def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner, annouter):
+def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner, annouter, directories):
     """
     # # Photometry using astropy photutils and AAVSO comparison stars
     # 
@@ -33,6 +33,7 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner
     warnings.filterwarnings('ignore')
     Vizier.ROW_LIMIT=-1
     import time
+    import json
     
     '''
     print("It is important to determine whether you will be running Photometry on a single series of")
@@ -51,7 +52,8 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner
     # TARGET_RAN ='128.4261105' #AT2020adow
     # TARGET_DECN = '27.7122696'
     
-    
+    with open(directories) as f:
+        dirs = json.load(f)
     estmag = predmag
     fluxrange = magrange
     snr = snr
@@ -90,9 +92,9 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner
     else:
         from PhotoWrapper2 import targetdir 
     
-    calibrationpath = '/home/david/ZowadaTransients/Calibration'
-    flatspath = '/home/david/ZowadaTransients/Flats'
-    processedpath = '/home/david/ZowadaTransients/Templates/'
+    calibrationpath = dirs['Calibration']
+    flatspath = dirs['Flats']
+    processedpath = dirs['Templates']
     #targetpath= processedpath + '/' + targetdir
     
     
@@ -1357,7 +1359,7 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner
     
     print(menu7)
     try:
-        os.mkdir('/home/david/ZowadaTransients/Photometry/'+TargetObject)
+        os.mkdir(dirs['Photometry']+TargetObject)
         print("Directory made")
     except FileExistsError:
         print("Directory already exists")
@@ -1371,4 +1373,4 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, apradius, anninner
     print("Photometry program has concluded.  Your measurements have been successfully completed.  Congratulations!")
 
 if __name__ == "__main__":
-    main(date, objid, predmag, magrange,fwhmmultiplier, snr, apradius, anninner, annouter)
+    main(date, objid, predmag, magrange,fwhmmultiplier, snr, apradius, anninner, annouter, directories)

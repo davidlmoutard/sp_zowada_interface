@@ -1,5 +1,5 @@
 
-def main(date, objid):
+def main(date, objid, directories):
     from astropy.io import fits
     from reproject import reproject_interp
     import os
@@ -8,15 +8,16 @@ def main(date, objid):
     import re
     from astropy.stats import sigma_clipped_stats, SigmaClip
     import gc
-    
+    import json
     # for toppath in os.listdir('/home/david/ZowadaTransients/Processed/SN2020uyn'):
     
     gc.enable()
     date = date #date of lights to align to
-    targetname =  objid
+    targetname = objid
+    with open(directories) as f:
+        dirs = json.load(f)
     
-    
-    templateDir = "/home/david/ZowadaTransients/Templates/"+targetname #file location of templates
+    templateDir = dirs['Templates']+targetname #file location of templates
     
     path = os.path.join(templateDir,date)
     try:
@@ -31,12 +32,12 @@ def main(date, objid):
         print("Date Directory already exists")
     os.chdir(templateDir)
     
-    for filename in os.listdir("/home/david/ZowadaTransients/Processed/" + targetname + "/"+ date + "/nanmedian/"):
-        lightFile = "/home/david/ZowadaTransients/Processed/" + targetname + "/"+ date + "/nanmedian/" +filename
+    for filename in os.listdir(dirs['Processed'] + targetname + "/"+ date + "/nanmedian/"):
+        lightFile = dirs['Processed'] + targetname + "/"+ date + "/nanmedian/" +filename
         filt = lightFile[-5]
-        os.system('cp '+ lightFile +  ' /home/david/ZowadaTransients/Templates/' +targetname + "/"+date +"/lightaligned-"+filt+".fits")
+        os.system('cp '+ lightFile +  ' ' + templateDir + "/"+date +"/lightaligned-"+filt+".fits")
     #Pulls up and manipulates template for alignement, creates a template if one does not exist
-        HDUList = fits.open('/home/david/ZowadaTransients/Templates/' +targetname + "/"+date +"/lightaligned-"+filt+".fits") 
+        HDUList = fits.open(templateDir + "/"+date +"/lightaligned-"+filt+".fits") 
         lightprocData = HDUList[0].data
         lightheader = HDUList[0].header
         HDUList.close()
@@ -72,7 +73,7 @@ def main(date, objid):
         lighthdu = fits.PrimaryHDU(lightprocData)
         lighthdul = fits.HDUList([lighthdu])
         header = lightheader
-        fits.writeto('/home/david/ZowadaTransients/Templates/' +targetname + "/"+date +"/lightaligned-"+filt+".fits"\
+        fits.writeto(templateDir + "/"+date +"/lightaligned-"+filt+".fits"\
                      , data = lighthdul[0].data, header = header, overwrite = True)
         
         HDUList = fits.open(lightFile) 
@@ -122,7 +123,7 @@ def main(date, objid):
             os.system('rm -r ' + date)
         
         objname = targetname
-        fileloc = '/home/david/ZowadaTransients/Templates/'+objname+'/'+date+'/'+'templatealigned-'+filt+'.fits'
+        fileloc = templateDir+'/'+date+'/'+'templatealigned-'+filt+'.fits'
         HDUList = fits.open(fileloc)
         tmpldata = HDUList[0].data
         HDUList.close()
@@ -138,11 +139,11 @@ def main(date, objid):
                 else:
                     continue
                     
-        fits.writeto('/home/david/ZowadaTransients/Templates/' +objname+'/'+date+'/' +"/tmplmask-"+filt+".fits"\
+        fits.writeto(templateDir+'/'+date+'/' +"/tmplmask-"+filt+".fits"\
                          , data = maskarray, overwrite = True)
         
         
-        fileloc = '/home/david/ZowadaTransients/Templates/'+objname+'/'+date+'/'+'lightaligned-'+filt+'.fits'
+        fileloc = templateDir+'/'+date+'/'+'lightaligned-'+filt+'.fits'
         HDUList = fits.open(fileloc)
         scidata = HDUList[0].data
         clipper = SigmaClip(sigma = 2.5)
@@ -162,14 +163,14 @@ def main(date, objid):
                 else:
                     continue
                     
-        fits.writeto('/home/david/ZowadaTransients/Templates/' +objname+'/'+date+'/' +"/scimask-"+filt+".fits"\
+        fits.writeto(templateDir+'/'+date+'/' +"/scimask-"+filt+".fits"\
                          , data = maskarray, overwrite = True)    
        
     gc.disable()
             
     
 if __name__ == "__main__":
-    main(date, objid)
+    main(date, objid, directories)
 
             
 

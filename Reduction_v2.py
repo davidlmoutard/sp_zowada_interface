@@ -12,7 +12,7 @@ Output is written to /python/filesnew/<FITS file object name>
 
 ### Load the Astropy and other functions and programs - not all used
 
-def main(date,objid):
+def main(date,objid,directories):
 
     import numpy as np
 
@@ -28,7 +28,7 @@ def main(date,objid):
     import os
     from astropy.io import fits
     from scipy.ndimage import interpolation as interp
-    
+    import json
     from skimage.feature.register_translation import (register_translation, _upsampled_dft)
     import gc
     ## This turns off warnings: not a great way to code
@@ -58,13 +58,14 @@ def main(date,objid):
     #TOGGLESIGMA=input("Answer 'Yes' or 'No' to whether you wish to see these statistics and data. You have 3 seconds.  ")
     TOGGLESIGMA = 'No'
     time.sleep(3)
-    
+    with open(directories) as f:
+        dirs = json.load(f)
     targetname = objid
     date = date
     ## Here we define the path to our Data
-    path = '/home/david/ZowadaTransients/Lights/' + targetname + "/" + date
-    calibrationpath = '/home/david/ZowadaTransients/Calibration'
-    flatspath = '/home/david/ZowadaTransients/Flats'
+    path = dirs['Lights'] + targetname + "/" + date
+    calibrationpath = dirs['Calibration']
+    flatspath = dirs['Flats']
     os.chdir(path)
     # print(path)
     
@@ -116,44 +117,44 @@ def main(date,objid):
     print(dirlist1_images)
     
     ## Then we create Directories for Bias and Dark frames
-    dirlist_bias=glob.glob(calibrationpath + '/' + '*Bia*.fits')+glob.glob(calibrationpath + '/' + '*Bia*.fts')
-    dirlist1_bias=dirlist_bias+glob.glob(calibrationpath + '/' + '*Bia*.fit')
+    dirlist_bias=glob.glob(calibrationpath + '*Bia*.fits')+glob.glob(calibrationpath  + '*Bia*.fts')
+    dirlist1_bias=dirlist_bias+glob.glob(calibrationpath + '*Bia*.fit')
     # print(dirlist1_bias)
     
-    dirlist_dark=glob.glob(calibrationpath + '/' + '*Dar*.fits')+glob.glob(calibrationpath + '/' + '*Dar*.fts')
-    dirlist1_dark=dirlist_dark+glob.glob(calibrationpath + '/' + '*Dar*.fit')
+    dirlist_dark=glob.glob(calibrationpath + '*Dar*.fits')+glob.glob(calibrationpath  + '*Dar*.fts')
+    dirlist1_dark=dirlist_dark+glob.glob(calibrationpath + '*Dar*.fit')
     # print(dirlist1_dark)
     
     ## Then we create Directories for Flat frames by Filter
-    dirlist_blueflat=glob.glob(flatspath+'/'+'*Blue*.fits')+glob.glob(flatspath+'/'+'*Blue*.fts')
-    dirlist1_blueflat=dirlist_blueflat+glob.glob(flatspath+'/'+'*Blue*.fit')
+    dirlist_blueflat=glob.glob(flatspath+'*Blue*.fits')+glob.glob(flatspath+'*Blue*.fts')
+    dirlist1_blueflat=dirlist_blueflat+glob.glob(flatspath+'*Blue*.fit')
     # print(dirlist1_blueflat)
-    dirlist_redflat=glob.glob(flatspath+'/'+'*Red*.fits')+glob.glob(flatspath+'/'+'*Red*.fts')
-    dirlist1_redflat=dirlist_redflat+glob.glob(flatspath+'/'+'*Red*.fit')
+    dirlist_redflat=glob.glob(flatspath+'*Red*.fits')+glob.glob(flatspath+'*Red*.fts')
+    dirlist1_redflat=dirlist_redflat+glob.glob(flatspath+'*Red*.fit')
     # print(dirlist1_redflat)
-    dirlist_greenflat=glob.glob(flatspath+'/'+'*Green*.fits')+glob.glob(flatspath+'/'+'*Green*.fts')
-    dirlist1_greenflat=dirlist_greenflat+glob.glob(flatspath+'/'+'*Green*.fit')
+    dirlist_greenflat=glob.glob(flatspath+'*Green*.fits')+glob.glob(flatspath+'*Green*.fts')
+    dirlist1_greenflat=dirlist_greenflat+glob.glob(flatspath+'*Green*.fit')
     # print(dirlist1_greenflat)
-    dirlist_lumflat=glob.glob(flatspath+'/'+'*Luminance*.fits')+glob.glob(flatspath+'/'+'*Luminance*.fts')
-    dirlist1_lumflat=dirlist_lumflat+glob.glob(flatspath+'/'+'*Luminance*.fit')
+    dirlist_lumflat=glob.glob(flatspath+'*Luminance*.fits')+glob.glob(flatspath+'*Luminance*.fts')
+    dirlist1_lumflat=dirlist_lumflat+glob.glob(flatspath+'*Luminance*.fit')
     # print(dirlist1_lumflat)
-    dirlist_Haflat=glob.glob(flatspath+'/'+'*Ha-*.fits')+glob.glob(flatspath+'/'+'*Ha-*.fts')
-    dirlist1_Haflat=dirlist_Haflat+glob.glob(flatspath+'/'+'*Ha-*.fit')
+    dirlist_Haflat=glob.glob(flatspath+'*Ha-*.fits')+glob.glob(flatspath+'*Ha-*.fts')
+    dirlist1_Haflat=dirlist_Haflat+glob.glob(flatspath+'*Ha-*.fit')
     # print(dirlist1_Haflat)
-    dirlist_gflat=glob.glob(flatspath+'/'+'*-g-*.fits')+glob.glob(flatspath+'/'+'*-g-*.fts')
-    dirlist1_gflat=dirlist_gflat+glob.glob(flatspath+'/'+'*-g-*.fit')
+    dirlist_gflat=glob.glob(flatspath+'*-g-*.fits')+glob.glob(flatspath+'*-g-*.fts')
+    dirlist1_gflat=dirlist_gflat+glob.glob(flatspath+'*-g-*.fit')
     # print(dirlist1_gflat)
-    dirlist_iflat=glob.glob(flatspath+'/'+'*-i-*.fits')+glob.glob(flatspath+'/'+'*-i-*.fts')
-    dirlist1_iflat=dirlist_iflat+glob.glob(flatspath+'/'+'*-i-*.fit')
+    dirlist_iflat=glob.glob(flatspath+'*-i-*.fits')+glob.glob(flatspath+'*-i-*.fts')
+    dirlist1_iflat=dirlist_iflat+glob.glob(flatspath+'*-i-*.fit')
     # print(dirlist1_iflat)
-    dirlist_rflat=glob.glob(flatspath+'/'+'*-r-*.fits')+glob.glob(flatspath+'/'+'*-r-*.fts')
-    dirlist1_rflat=dirlist_rflat+glob.glob(flatspath+'/'+'*-r-*.fit')
+    dirlist_rflat=glob.glob(flatspath+'*-r-*.fits')+glob.glob(flatspath+'*-r-*.fts')
+    dirlist1_rflat=dirlist_rflat+glob.glob(flatspath+'*-r-*.fit')
     # print(dirlist1_rflat)
-    dirlist_uflat=glob.glob(flatspath+'/'+'*-u-*.fits')+glob.glob(flatspath+'/'+'*-u-*.fts')
-    dirlist1_uflat=dirlist_uflat+glob.glob(flatspath+'/'+'*-u-*.fit')
+    dirlist_uflat=glob.glob(flatspath+'*-u-*.fits')+glob.glob(flatspath+'*-u-*.fts')
+    dirlist1_uflat=dirlist_uflat+glob.glob(flatspath+'*-u-*.fit')
     # print(dirlist1_uflat)
-    dirlist_zflat=glob.glob(flatspath+'/'+'*-z-*.fits')+glob.glob(flatspath+'/'+'*-z-*.fts')
-    dirlist1_zflat=dirlist_zflat+glob.glob(flatspath+'/'+'*-z-*.fit')
+    dirlist_zflat=glob.glob(flatspath+'*-z-*.fits')+glob.glob(flatspath+'*-z-*.fts')
+    dirlist1_zflat=dirlist_zflat+glob.glob(flatspath+'*-z-*.fit')
     # print(dirlist1_zflat)
     dirlist1_flat=dirlist1_blueflat+dirlist1_redflat+dirlist1_greenflat+dirlist1_rflat+dirlist1_gflat \
     +dirlist1_iflat+dirlist1_uflat+dirlist1_zflat+dirlist1_lumflat+dirlist1_Haflat
@@ -1570,7 +1571,7 @@ def main(date,objid):
     print("# This section creates the Processed Directory")
     
     
-    processedpath =  '/home/david/ZowadaTransients/Processed'
+    processedpath =  dirs['Processed']
     
     processeddir = processedpath
     print(processeddir)
@@ -1622,12 +1623,12 @@ def main(date,objid):
     # print(numlumfiles)
     
     # This section creates the Target Directory
-    targetdir = processedpath +'/'+ str(TargetObject) +'/'+date
+    targetdir = processedpath+ str(TargetObject) +'/'+date
     print(targetdir)
     
                    
-    if not os.path.isdir(processedpath +'/'+ str(TargetObject)):
-        os.mkdir(processedpath +'/'+ str(TargetObject))
+    if not os.path.isdir(processedpath + str(TargetObject)):
+        os.mkdir(processedpath + str(TargetObject))
     if not os.path.isdir(targetdir):
         os.mkdir(targetdir)
         
@@ -2208,4 +2209,4 @@ def main(date,objid):
     print("Image reduction program has concluded.  Your images have been successfully processed.")
     gc.disable()
 if __name__ == '__main__':
-    main(date,objid)
+    main(date,objid, directories)

@@ -1,6 +1,4 @@
-
-
-def main(date, objid):
+def main(date, objid, directories):
     from astropy.io import fits
     import os
     import numpy as np
@@ -12,11 +10,16 @@ def main(date, objid):
     import subprocess
     import gc
     from scipy.optimize import minimize
-    
+    import json
     gc.enable()
-    templateDir = "/home/david/ZowadaTransients/Templates/"
+    with open(directories) as f:
+        dirs = json.load(f)
+    
+    templateDir = dirs['Templates']
     sourcelocs =  objid
     date = date
+    
+    
     
     lightdir = templateDir + sourcelocs + "/"+ date
     os.chdir(lightdir)
@@ -151,4 +154,4 @@ def main(date, objid):
     gc.disable()  
     
 if __name__ == "__main__":
-    main(date, objid)
+    main(date, objid, directories)

@@ -2,6 +2,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Pipeline for processing Zowada images')
 
+parser.add_argument("-D","--directories", help = "File location of .json file containing directories", required = True)
 parser.add_argument("-d","--date", help="Date of images to process", required = True)
 parser.add_argument("-o","--objid", help="Name of object you are processing", required = True)
 parser.add_argument("-m","--mag", help="Predicted magnitude of object", required = True)
@@ -25,6 +26,7 @@ apradius = args.apradius
 anninner = args.anninner
 annouter = args.annouter
 photonly = args.photonly
+directories = args.directories
 ## to run in spyder/IDE
 # date = 
 # objid = 
@@ -45,7 +47,7 @@ import Photometry_v8e as SDSSphotometry
 import Photometry_v7apass as APASSphotometry
 
 def main(date, objid, predmag, magrange, fwhmmultiplier, snr, \
-                       apradius, anninner, annouter, photonly):
+                       apradius, anninner, annouter, photonly, directories):
     
     if photonly == False:
         reduction.main(date,objid)
@@ -68,7 +70,7 @@ def main(date, objid, predmag, magrange, fwhmmultiplier, snr, \
 
 if __name__ == "__main__":
     main(date, objid, predmag, magrange, fwhmmultiplier, snr, \
-                       apradius, anninner, annouter, photonly)
+                       apradius, anninner, annouter, photonly, directories)
         
     
 

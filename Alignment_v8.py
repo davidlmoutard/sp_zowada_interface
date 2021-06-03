@@ -16,9 +16,9 @@ Output is written to /python/filesnew/<FITS file object name>
 
 ### Load the Astropy and other functions and programs - not all used
 
-def main(date, objid):
+def main(date, objid,directories):
     import numpy as np
-    
+    import json
     import matplotlib
     import matplotlib.pyplot as plt
     import matplotlib.gridspec as gridspec
@@ -58,14 +58,15 @@ def main(date, objid):
             plt.subplot(gs[i])
             plt.imshow(np.log10(B), origin='lower', cmap='gray')
             plt.title(imagenames[i])
-    
+    with open(directories) as f:
+        dirs = json.load(f)
     #TargetObject = input("Please provide the Name of your target as described in your File Directory name.  You have 5 seconds.  ")
     TargetObject = objid
     date = date
     ## Here we define the path to our Data
-    path = '/home/david/ZowadaTransients/Lights/' + TargetObject + "/" + date
+    path = dirs['Lights'] + TargetObject + "/" + date
     
-    processedpath = '/home/david/ZowadaTransients/Processed'
+    processedpath = dirs['Processed']
     
     
     #TargetObject = '2MASS J18014991+1100284'
@@ -75,9 +76,9 @@ def main(date, objid):
     
     #time.sleep(5)
     
-    targetdir = processedpath +'/'+ str(TargetObject)+'/'+date
-    if not os.path.isdir(processedpath +'/'+ str(TargetObject)):
-        os.mkdir(processedpath +'/'+ str(TargetObject))
+    targetdir = processedpath + str(TargetObject)+'/'+date
+    if not os.path.isdir(processedpath + str(TargetObject)):
+        os.mkdir(processedpath + str(TargetObject))
     if not os.path.isdir(targetdir):
         os.mkdir(targetdir)
     
@@ -2784,4 +2785,4 @@ def main(date, objid):
     
     ##  END  ###
 if __name__ == '__main__':
-    main(date, objid)
+    main(date, objid,directories)
