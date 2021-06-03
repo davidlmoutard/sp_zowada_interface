@@ -6,7 +6,7 @@ pieces of astronomy software like SExtractor and PSFex.It currently requires tha
 
 The required inputs are:
 
--D, --directories: file containing the directories used in photometry. A different directory in this scheme is used to store Calibration, Flats, Templates, etc.
+-D, --directories: file containing the directories used in photometry. A different directory in this scheme is used to store Calibration, Flats, Templates, etc. An example (the one I use) is in the repository
 
 -d, --date: date of images, in the form mmddyyyy. Each night of images is stored in a directory like: "topdir/ObjectName/Date"
 
