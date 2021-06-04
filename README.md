@@ -29,4 +29,4 @@ Optional inputs
 
 sp_candidate_get.py is a script which allows you to query SkyPortal, and will return a csv file to specified location of any valid transients for use in other 
 follow-up algorithms. This script also requires that you change the outputDir variable to your desireed directory for the csv file, and you must also change the 
-obsLoc variable to match your observatory's latitude,longitude, and altitude. 
+obsLoc variable to match your observatory's latitude,longitude, and altitude. By adjusting the date to always be yesterday using the Python 'time' module, as well as a scheduler like cron, it should be trivial to have this generate a new list of candidates every day.
