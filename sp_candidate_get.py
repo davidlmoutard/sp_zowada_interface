@@ -7,7 +7,7 @@ from datetime import date
 from astropy.io import ascii
 from astropy.table import Table
 
-token = '707380b8-2b32-49ca-b83a-4ae4ad505752'
+token = '' #Your unique token
 
 groupData = requests.get(
     'http://desi2.lbl.gov:5000/api/groups',
