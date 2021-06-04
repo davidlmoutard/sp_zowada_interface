@@ -7,19 +7,19 @@ from datetime import date
 from astropy.io import ascii
 from astropy.table import Table
 
-token = '' #Need to insert your specific token provided by SkyPortal
+token = '707380b8-2b32-49ca-b83a-4ae4ad505752'
 
 groupData = requests.get(
     'http://desi2.lbl.gov:5000/api/groups',
     headers={'Authorization': f'token {token}'})
 
 
-startDate = "2021-05-03"
+startDate = "2021-05-20"
 numPerPage = 500
 groupIDs = [] 
 
 
-groupList = ['DESIDIFF Color', 'DESIDIFF TDE', 'DESIDIFF Hydrogen']
+groupList = ['DESIDIFF Color', 'DESIDIFF TDE', 'DESIDIFF Hydrogen','DESITRIP']
 for groupName in groupList:
     for group in groupData.json()['data']['user_groups']:
         if groupName in group.values():
@@ -61,24 +61,28 @@ def isvisible(candidate, airmassThresh = 2.00):
         return False
 
 def isbright(candidate, magThresh = 20):
-    flux = candidate['photometry'][-1]['flux'] # Grabs most recent photometry
-    filt = candidate['photometry'][-1]['filter']
-    mjd = candidate['photometry'][-1]['mjd']
-    mag = 22.5 - 2.5*np.log10(flux)
-    if mag < magThresh:
-        return True
+    if len(candidate['photometry']) == 0:
+        return True #assume if no photometry that it's bright enough
     else:
-        return False
-    
+        flux = candidate['photometry'][-1]['flux'] # Grabs most recent photometry
+        filt = candidate['photometry'][-1]['filter']
+        mjd = candidate['photometry'][-1]['mjd']
+        mag = 22.5 - 2.5*np.log10(flux)
+        if mag < magThresh:
+            return True
+        else:
+            return False
+
+        
 data = response.json()["data"]["candidates"]
 print("Candidates: "+ str(len(data)))
-
+#%%
 invalid = []
 for i in data:
     transient = istransient(i)
     visible = isvisible(i)
     bright = isbright(i)
-    if not transient or visible or bright:
+    if not transient or not visible or not bright:
         invalid.append(i)
 
 for k in invalid:
@@ -97,9 +101,15 @@ for i in data:
     redshifts.append(i['redshift'])
     RAs.append(i['ra'])
     DECs.append(i['dec'])
-    mags.append(22.5 - 2.5*np.log10(i['photometry'][-1]['flux']))
-    mjds.append(i['photometry'][-1]['mjd'])
-    filts.append(i['photometry'][-1]['filter'])
+    if len(i['photometry']) > 0:
+        mags.append(22.5 - 2.5*np.log10(i['photometry'][-1]['flux']))
+        mjds.append(i['photometry'][-1]['mjd'])
+        filts.append(i['photometry'][-1]['filter'])
+    else:
+        mags.append(np.nan)
+        mjds.append(np.nan)
+        filts.append(np.nan)
+        
 
 transientOutput = Table([IDs,RAs,DECs,redshifts, mjds, mags, filts], \
                         names = ('ID','RA', 'DEC', 'Redshift','MJD','Mag','Filter'))   
