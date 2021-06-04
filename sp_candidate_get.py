@@ -6,15 +6,20 @@ from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 from datetime import date
 from astropy.io import ascii
 from astropy.table import Table
+import datetime
 
-token = '' #Your unique token
+
+token = '707380b8-2b32-49ca-b83a-4ae4ad505752'
 
 groupData = requests.get(
     'http://desi2.lbl.gov:5000/api/groups',
     headers={'Authorization': f'token {token}'})
 
+today = datetime.date.today()
 
-startDate = "2021-05-20"
+startDate = today - datetime.timedelta(days=1)
+dateStr = str(startDate)
+#startDate = "2021-05-20"
 numPerPage = 500
 groupIDs = [] 
 
@@ -118,6 +123,6 @@ print(transientOutput)
 groupStr = ''
 for ID in groupIDs:
     groupStr += '_'+str(ID)
-ascii.write(transientOutput, outputDir+'SkyPortal_'+startDate+groupStr+'.csv', format = 'csv', overwrite =True)       
+ascii.write(transientOutput, outputDir+'SkyPortal_'+dateStr+groupStr+'.csv', format = 'csv', overwrite =True)       
     
 
