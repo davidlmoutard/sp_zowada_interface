@@ -9,7 +9,7 @@ from astropy.table import Table
 import datetime
 import os
 
-token = ''
+token = 'your-token-here'
 
 groupData = requests.get(
     'http://desi2.lbl.gov:5000/api/groups',
